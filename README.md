@@ -39,10 +39,10 @@ Edit
 ---
 
 ## 🧑‍🤝‍🧑 Team
-- **[Your Name]** – Lead Developer
-- **[Member 2]** – AI/ML Engineer
-- **[Member 3]** – Frontend Developer
-- **[Member 4]** – Data Specialist
+- Kundan Kumar – Lead Developer
+- Nikita Nayak  – AI/ML Engineer
+   Koustubh Verma – Frontend Developer
+- Gyan Prakash – Data Specialist and ML Engineer
 
 ---
 
