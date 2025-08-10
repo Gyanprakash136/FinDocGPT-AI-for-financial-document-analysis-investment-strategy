@@ -1,12 +1,12 @@
 # FinDocGPT — From Financial Docs to Decisions (Stage 1–3)
 
-**AkashX.ai Hackathon project**
+**An AkashX.ai Hackathon Project**
 
-Turn unstructured financial documents + market data into **actionable** buy/sell decisions.
+Turn unstructured financial documents and market data into **actionable** buy/sell decisions. This project integrates document analysis, time-series forecasting, and a strategic decision layer into a single, user-friendly application.
 
-- **Stage 1 – Insights & Analysis:** Upload PDFs → RAG Q&A → Sentiment → Anomaly detection  
-- **Stage 2 – Forecasting:** Yahoo Finance history → Prophet + LSTM + XGBoost → Ensemble forecast  
-- **Stage 3 – Strategy:** BUY/SELL/HOLD signals with confidence, holding period, and an interactive Plotly dashboard
+- **Stage 1 – Insights & Analysis:** Upload PDFs → RAG Q&A → Sentiment Analysis → Anomaly Detection
+- **Stage 2 – Forecasting:** Yahoo Finance History → Prophet + LSTM + XGBoost → Ensemble Forecast
+- **Stage 3 – Strategy:** Generate BUY/SELL/HOLD signals with confidence, holding period, and an interactive Plotly dashboard.
 
 ---
 
@@ -15,330 +15,235 @@ Turn unstructured financial documents + market data into **actionable** buy/sell
 - [What We Built](#what-we-built)
 - [Architecture](#architecture)
 - [Project Structure](#project-structure)
-- [Quickstart](#quickstart)
-- [How It Works (Stages 1–3)](#how-it-works-stages-1–3)
-- [Configuration Knobs](#configuration-knobs)
+- [Quickstart Guide](#quickstart-guide)
+- [How It Works (In-Depth)](#how-it-works-in-depth)
+- [Configuration](#configuration)
 - [API Endpoints](#api-endpoints)
 - [Troubleshooting](#troubleshooting)
 - [Tech Stack](#tech-stack)
-- [Requirements.txt](#requirementstxt)
-- [Roadmap](#roadmap)
 - [License](#license)
 - [Acknowledgments](#acknowledgments)
 
 ---
 
 ## Demo Screenshots
+> **Note:** Place your UI images in the `screenshots/` directory, named from `1.png` to `12.png`. They will automatically appear below.
 
-> Place images in `screenshots/` as `1.png` … `12.png`. They’ll render automatically below.
-
-| #  | Feature                                       | Image                           |
-|----|-----------------------------------------------|---------------------------------|
-| 1  | Home / Health check                           | ![1](screenshots/1.png)         |
-| 2  | PDF Upload (Stage 1)                          | ![2](screenshots/2.png)         |
-| 3  | Processing Status                             | ![3](screenshots/3.png)         |
-| 4  | Q&A over PDF chunks                           | ![4](screenshots/4.png)         |
-| 5  | Sentiment (session or custom text)            | ![5](screenshots/5.png)         |
-| 6  | Anomaly Detection (YoY/Margins)               | ![6](screenshots/6.png)         |
-| 7  | Forecast Inputs (Stage 2)                     | ![7](screenshots/7.png)         |
-| 8  | Strategy Chart: Price + Ensemble              | ![8](screenshots/8.png)         |
-| 9  | Signal Timeline (BUY/HOLD/SELL)               | ![9](screenshots/9.png)         |
-| 10 | Expected Return & Confidence                  | ![10](screenshots/10.png)       |
-| 11 | Model Metrics Table                           | ![11](screenshots/11.png)       |
-| 12 | Downloadable CSVs + Embedded Chart            | ![12](screenshots/12.png)       |
+| Feature | Screenshot Preview |
+| :--- | :---: |
+| **1. Home / Health Check** | ![Home Page](screenshots/1.png) |
+| **2. PDF Upload (Stage 1)** | ![PDF Upload](screenshots/2.png) |
+| **3. Document Processing Status** | ![Processing Status](screenshots/3.png) |
+| **4. Q&A Over PDF Chunks** | ![Q&A Interface](screenshots/4.png) |
+| **5. Sentiment Analysis** | ![Sentiment Analysis](screenshots/5.png) |
+| **6. Anomaly Detection (YoY/Margins)** | ![Anomaly Detection](screenshots/6.png) |
+| **7. Forecasting Inputs (Stage 2)** | ![Forecasting Inputs](screenshots/7.png) |
+| **8. Strategy Chart: Price + Ensemble** | ![Strategy Chart](screenshots/8.png) |
+| **9. Signal Timeline (BUY/HOLD/SELL)** | ![Signal Timeline](screenshots/9.png) |
+| **10. Expected Return & Confidence** | ![Return and Confidence](screenshots/10.png) |
+| **11. Model Performance Metrics** | ![Model Metrics](screenshots/11.png) |
+| **12. Downloads & Embedded Chart** | ![Downloads](screenshots/12.png) |
 
 ---
 
 ## What We Built
 
-**Problem:** Financial reports and market data are fragmented. Analysts lose time stitching insights from PDFs, price history, and sentiment—then translating that into trade decisions.
+**The Problem:** Financial analysts spend excessive time manually parsing dense financial reports (like 10-Ks), correlating them with market data, and then translating these fragmented insights into trading decisions.
 
-**Solution:** FinDocGPT ingests PDFs, answers questions grounded in the upload, scores sentiment, flags anomalies, predicts prices with an ensemble of models, and outputs **clear BUY/SELL/HOLD signals** with confidence and holding period.
+**Our Solution:** FinDocGPT is an end-to-end system that automates this workflow. It ingests unstructured PDFs, performs deep analysis, forecasts future price movements using an ensemble of ML models, and generates clear, data-backed **BUY/SELL/HOLD** recommendations.
 
-**Who benefits:** Equity analysts, PMs, fintech builders, and students learning applied AI in finance.
-
-**What’s impressive:**  
-- End-to-end flow from **document → insight → forecast → trade** in one UI  
-- Fast RAG with persistent embeddings (ChromaDB)  
-- Ensemble forecasting + transparent, interactive Plotly dashboard  
-- Practical strategy layer with CSV exports and embeddable chart
+**Key Features:**
+- **Unified Workflow:** From raw document to final trade decision in a single, intuitive interface.
+- **Advanced RAG:** Fast, accurate, and context-aware Q&A on financial documents using a persistent vector store.
+- **Ensemble Forecasting:** Combines the strengths of Prophet, LSTM, and XGBoost for more robust price predictions.
+- **Actionable Strategy Layer:** Translates forecasts into practical trading signals with confidence scores and recommended holding periods.
 
 ---
 
 ## Architecture
 
-**Frontend:** Streamlit (`frontend.py`)  
-**Backend:** FastAPI (`main.py`)
-- **RAG store:** ChromaDB (persistent local DB)
-- **Embeddings:** Sentence-Transformers `all-MiniLM-L6-v2`
-- **LLM helper:** Gemini 2.5 Flash (structured JSON prompts for sentiment/anomaly)
-- **Forecasting:** Prophet + LSTM (Keras/TensorFlow) + XGBoost (feature-engineered lags/stats)
-- **Strategy:** Threshold rules → BUY/SELL/HOLD + confidence + holding period
-- **Static:** Interactive Plotly HTML + CSV files, served via `/static`
+- **Frontend:** **Streamlit** (`FDocgpt_streamLit.py`) provides the interactive user interface.
+- **Backend:** **FastAPI** (`FDocgpt_backend.py`) serves the core logic via a REST API.
+- **RAG & Vector Store:** **ChromaDB** for persistent, efficient semantic search, using **Sentence-Transformers** for embeddings.
+- **LLM Integration:** **Gemini** for structured data extraction (sentiment, anomalies) in JSON format.
+- **Forecasting Models:** **Prophet** (for trend/seasonality), **Keras/TensorFlow LSTM** (for sequence modeling), and **XGBoost** (for feature-driven prediction).
+- **Data Serving:** Static assets like Plotly charts (`.html`) and data exports (`.csv`) are served from the `/outputs` directory.
 
 ---
 
 ## Project Structure
+Your repository should look like this to ensure all paths work correctly.
 
-/ (repo root)
-├─ FDocgpt_backend.py # FastAPI backend (Stage 1–3)
-├─ FDocgpt_streamLit.py # Streamlit UI (Stage 1–3)
-├─ outputs/ # Plotly HTML & CSVs (served at /static)
-├─ db/ # Chroma persistent store
-├─ temp_files/ # Uploaded PDFs (transient)
-├─ screenshots/ # 1.png ... 12.png (UI walkthrough)
-├─ .env # GEMINI_API_KEY=...
-└─ requirements.txt
-
+```
+/FinDocGPT
+├─ FDocgpt_backend.py      # FastAPI backend logic (Stages 1–3)
+├─ FDocgpt_streamLit.py    # Streamlit frontend UI
+├─ requirements.txt        # Project dependencies
+├─ .env                    # Environment variables (e.g., API keys)
+├─ db/                     # ChromaDB persistent vector store
+├─ outputs/                # Generated Plotly charts and CSVs
+├─ temp_files/             # Temporary storage for uploaded PDFs
+└─ screenshots/            # Directory for UI images (1.png, 2.png, etc.)
+```
 
 ---
 
-## Quickstart
+## Quickstart Guide
 
-### 1) Create environment (Python 3.10 recommended)
+### 1. Set Up Python Environment
+We recommend using Python 3.10.
+
 ```bash
-# venv
-python -m venv .venv
-# Windows:
-.venv\Scripts\activate
-# macOS/Linux:
-source .venv/bin/activate
+# Create and activate a virtual environment
+python -m venv venv
+# On Windows:
+# venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
 
-# OR conda
-conda create -n findocgpt python=3.10 -y
-conda activate findocgpt
-pip install --upgrade pip setuptools wheel
+# Install dependencies
 pip install -r requirements.txt
+```
 
+### 2. Configure Environment Variables
+Create a `.env` file in the root directory and add your API key:
 
-GEMINI_API_KEY=YOUR_GOOGLE_AI_STUDIO_KEY
+```.env
+GEMINI_API_KEY="YOUR_GOOGLE_AI_STUDIO_KEY"
+```
 
+Set the Keras backend. This is crucial for model compatibility.
 
-# Windows (PowerShell)
+```bash
+# On Windows (in PowerShell)
 $env:KERAS_BACKEND="tensorflow"
-# macOS/Linux
-export KERAS_BACKEND=tensorflow
 
+# On macOS/Linux
+export KERAS_BACKEND="tensorflow"
+```
 
-3) Configure environment
-Create .env:
+### 3. Run the Backend Server
+The FastAPI backend serves the core logic and models.
 
-GEMINI_API_KEY=YOUR_GOOGLE_AI_STUDIO_KEY
-Set Keras backend (recommended, esp. on Windows):
+```bash
+uvicorn FDocgpt_backend:app --reload --port 8000
+```
+Check if it's running by visiting [http://localhost:8000](http://localhost:8000) in your browser.
 
-# Windows (PowerShell)
-$env:KERAS_BACKEND="tensorflow"
-# macOS/Linux
-export KERAS_BACKEND=tensorflow
-4) Run the backend
+### 4. Run the Frontend Application
+The Streamlit app provides the user interface.
 
-uvicorn main:app --reload --port 8000
-Health check: http://localhost:8000/
+```bash
+streamlit run FDocgpt_streamLit.py
+```
+Your browser should open a new tab with the application.
 
-5) Run the frontend
+---
 
-streamlit run frontend.py
-Use the Streamlit URL printed in your terminal.
+## How It Works (In-Depth)
 
-How It Works (Stages 1–3)
-Stage 1 — Insights & Analysis
-Upload PDF → chunk with PyMuPDF → embed via all-MiniLM-L6-v2 → store in ChromaDB (session-scoped).
+### Stage 1: Insights & Analysis
+1.  **PDF Ingestion:** PDFs are uploaded, and text is extracted using `PyMuPDF`.
+2.  **Chunking & Embedding:** Text is split into semantic chunks and converted into vector embeddings using `all-MiniLM-L6-v2`.
+3.  **Vector Storage:** Embeddings are stored in a persistent **ChromaDB** database, scoped by session.
+4.  **RAG Q&A:** User questions are converted into embeddings to find the most relevant text chunks for grounded, context-aware answers.
+5.  **LLM-Powered Analysis:** **Gemini** is prompted to return structured JSON for sentiment analysis and anomaly detection, with regex-based fallbacks for robustness.
 
-Q&A → semantic retrieval and a concise, context-only answer.
+### Stage 2: Forecasting
+1.  **Data Fetching:** Historical price data is pulled from **Yahoo Finance**.
+2.  **Feature Engineering:** A rich feature set is created, including technical indicators (RSI, MACD, Bollinger Bands), price lags, rolling statistics, and time-based features (day of week, month).
+3.  **Modeling:**
+    * **Prophet:** Captures seasonality and long-term trends.
+    * **LSTM:** Models complex temporal dependencies in the price sequence.
+    * **XGBoost:** A gradient-boosted model that excels with the engineered features.
+4.  **Ensemble:** The predictions from all three models are combined using a weighted average to produce a single, more reliable forecast.
 
-Sentiment → Gemini returns strict JSON {label, polarity, confidence, rationale}; falls back to rule-based lexicon if API fails.
+### Stage 3: Strategy & Decision
+1.  **Signal Generation:** The ensemble forecast is analyzed to identify trading signals. The default rules are **BUY** if the expected return is > +2% and **SELL** if < -2%.
+2.  **Confidence Score:** Calculated based on the magnitude of the predicted price movement.
+3.  **Holding Period:** Estimated by scanning forward until the initial signal (e.g., BUY) flips to its opposite (SELL).
+4.  **Outputs:** The system provides a clear primary recommendation, downloadable CSVs of all data, and an interactive Plotly chart that can be embedded or viewed directly.
 
-Anomaly detection → Gemini extracts metrics (YoY/QoQ, margins, EPS) as JSON; regex fallback for common patterns.
+---
 
-Stage 2 — Forecasting
-Data fetch → Yahoo Finance, auto-adjusted prices.
+## Configuration
 
-Feature engineering → TA indicators (RSI, MACD, BB), lags/rolling stats, cyclical time features.
+Key parameters can be adjusted directly in `FDocgpt_backend.py`:
 
-Models
+-   **RAG:** `CHUNK_SIZE` (default: 300), `TOP_K` (controlled on frontend).
+-   **Forecasting:** `HORIZON` (controlled on frontend, 5-120 days), `LSTM_WINDOW`, `LSTM_EPOCHS`.
+-   **Strategy:** `Config.BUY_THRESHOLD` (default: 0.02), `Config.SELL_THRESHOLD` (default: -0.02). Modify these to make trading signals more or less sensitive.
 
-Prophet: seasonality + trend
+---
 
-LSTM: sequence modeling (close or multi-features)
+## API Endpoints
 
-XGBoost: lags & rolling features
+The FastAPI backend exposes the following endpoints.
 
-Ensemble → weighted mean of valid forecasts → horizon N.
+#### Health Check
+- `GET /`: Returns the status and version of the API.
 
-Dashboard → historical vs. ensemble path, model metrics table.
+#### Stage 1: Document Insights
+- `POST /upload-pdf/`: Upload a PDF. Returns a `session_id`.
+- `GET /status/{task_id}`: Check the processing status of an upload.
+- `POST /query/`: Ask a question about the uploaded document.
+- `POST /sentiment/`: Analyze sentiment of the document or custom text.
+- `POST /anomaly/`: Detect anomalies in financial metrics.
 
-Stage 3 — Strategy
-Signals: Compute stepwise expected returns; thresholds default to BUY > +2%, SELL < −2%.
-
-Confidence: Scales with move magnitude, capped at 100%.
-
-Holding period: Simple forward scan—stop on signal flip or low-move; default horizon if none found.
-
-Outputs: First recommended action, CSVs, and an interactive Plotly chart (embedded in Streamlit, downloadable from /static).
-
-Configuration Knobs
-Stage 1
-
-CHUNK_SIZE (default 300)
-
-top_k retrieval (frontend control)
-
-Stage 2
-
-horizon (5–120 days; frontend control)
-
-LSTM: LSTM_WINDOW, LSTM_EPOCHS, TEST_SPLIT_RATIO (see Config in main.py)
-
-Stage 3
-
-Buy/Sell thresholds: Config.BUY_THRESHOLD = 0.02, SELL_THRESHOLD = -0.02
-
-Adjust in main.py for more/less aggressive signals
-
-API Endpoints
-Health
-pgsql
-Copy
-Edit
-GET / → {status, version, endpoints}
-Stage 1 – Documents & Insights
-bash
-Copy
-Edit
-POST /upload-pdf/            # returns {session_id, task_id}
-GET  /status/{task_id}       # processing state
-POST /query/                 # {question, top_k, session_id}
-POST /sentiment/             # {text? | session_id, top_k_chunks}
-POST /anomaly/               # {text? | session_id, top_k_chunks, yoy_threshold, margin_bps_threshold}
-Example:
-
+*Example `curl` for querying:*
+```bash
 curl -X POST http://localhost:8000/query/ \
-  -H "Content-Type: application/json" \
-  -d '{"question":"What was Q2 revenue?","top_k":8,"session_id":"YOUR_SESSION_ID"}'
-Stage 2 + 3 – Forecast & Strategy
+ -H "Content-Type: application/json" \
+ -d '{"question":"What was the net revenue in the last quarter?","top_k":5,"session_id":"YOUR_SESSION_ID"}'
+```
 
-POST /forecast/run           # {ticker, start, end, horizon, outdir}
-# returns:
-# - chart_url (Plotly HTML under /static)
-# - signals_csv_url, forecasts_csv_url
-# - next_action {action,date,price,holding_days,confidence,reason}
-# - metrics {...}
-Example:
+#### Stage 2 & 3: Forecast & Strategy
+- `POST /forecast/run`: Run the full forecast-to-strategy pipeline.
 
+*Example `curl` for forecasting:*
+```bash
 curl -X POST http://localhost:8000/forecast/run \
-  -H "Content-Type: application/json" \
-  -d '{"ticker":"AAPL","start":"2024-06-01","end":"2025-06-01","horizon":30,"outdir":"outputs"}'
+ -H "Content-Type: application/json" \
+ -d '{"ticker":"GOOGL","start":"2023-01-01","end":"2024-01-01","horizon":30}'
+```
 
-GET    /debug/sessions                 # list sessions + chunk counts
-DELETE /debug/sessions/{session_id}    # delete a session’s vectors
-Troubleshooting
-1) Streamlit duplicate widget IDs
-Give a unique key= to widgets that have the same label/params.
+---
 
-2) Keras/TensorFlow mismatches
-Use the pinned versions below and set KERAS_BACKEND=tensorflow. Restart your shell after changes.
+## Troubleshooting
 
-3) HuggingFace hub / transformers conflicts
-Pinned trio is known-good:
+1.  **Images Not Displaying:** Ensure your `screenshots` folder is in the root directory alongside `README.md`. GitHub requires this structure for relative paths to work.
+2.  **Keras/TensorFlow Errors:** Make sure you've set the `KERAS_BACKEND=tensorflow` environment variable *before* running the application. Use the pinned library versions in `requirements.txt`.
+3.  **`yfinance` Data Issues:** If you get empty data, double-check the stock ticker, ensure the date range is valid, and try a longer historical period.
+4.  **Port Conflict:** If port `8000` or `8501` is in use, specify new ones:
+    ```bash
+    # Run backend on a new port
+    uvicorn FDocgpt_backend:app --port 8001
+    # Run frontend on a new port
+    streamlit run FDocgpt_streamLit.py --server.port 8502
+    ```
+---
 
+## Tech Stack
 
-sentence-transformers==2.2.2
-transformers==4.30.2
-huggingface_hub==0.14.1
-4) Prophet on Windows
-If install fails:
+-   **Backend:** FastAPI, Uvicorn
+-   **Frontend:** Streamlit
+-   **AI/ML:**
+    -   **RAG:** ChromaDB, Sentence-Transformers
+    -   **LLM:** Gemini
+    -   **Forecasting:** Prophet, TensorFlow/Keras (for LSTM), XGBoost
+    -   **Data:** Pandas, NumPy, scikit-learn, yfinance
+-   **Visualization:** Plotly
 
-pip install --upgrade pip wheel setuptools
-pip install cmdstanpy
-5) oneDNN / TF warnings
-To normalize numerics (optional):
+---
 
+## License
 
-TF_ENABLE_ONEDNN_OPTS=0
-6) yfinance returns empty
-Check date range, market holidays, and symbol correctness (uppercase). Try a longer range.
+This project is licensed under the MIT License. See the `LICENSE` file for details.
 
-7) Ports already in use
-Change ports:
+---
 
-uvicorn main:app --reload --port 8001
-streamlit run frontend.py --server.port 8502
-8) CORS
-Front/back run on same machine by default. If needed, add CORS middleware to FastAPI.
+## Acknowledgments
+-   The **AkashX.ai** team for hosting the hackathon.
+-   The open-source community for creating amazing tools like FastAPI, Streamlit, Chroma, and the entire PyData stack.
+-   **Yahoo Finance** for providing accessible historical market data.
 
-Tech Stack
-Frontend: Streamlit
-
-Backend: FastAPI, Uvicorn
-
-RAG: ChromaDB, Sentence-Transformers
-
-LLM Helper: Gemini 2.5 Flash (JSON outputs)
-
-Forecasting: Prophet, Keras/TensorFlow LSTM, XGBoost
-
-Indicators: ta (RSI, MACD, BB, MFI, etc.)
-
-Charts: Plotly
-
-Requirements.txt
-Copy into requirements.txt:
-
-# Web + API
-fastapi==0.110.0
-uvicorn[standard]==0.30.1
-python-multipart==0.0.9
-pydantic==2.7.1
-requests==2.32.3
-python-dotenv==1.0.1
-
-# RAG
-chromadb==0.5.0
-sentence-transformers==2.2.2
-transformers==4.30.2
-huggingface_hub==0.14.1
-PyMuPDF==1.24.1
-
-# ML / Forecasting
-numpy==1.26.4
-pandas==2.2.2
-scikit-learn==1.4.2
-xgboost==2.0.3
-ta==0.11.0
-yfinance==0.2.40
-prophet==1.1.5
-
-# Deep Learning (pinned to avoid TF/Keras breakages)
-tensorflow==2.15.0
-keras==2.15.0
-tf-keras==2.15.0
-
-# Charts
-plotly==5.20.0
-
-# Frontend
-streamlit==1.37.1
-Roadmap
-Broker/Exchange connector for paper/live trading
-
-Risk overlays (vol targeting, drawdown guardrails)
-
-Explainable signals (shapley on XGBoost features)
-
-Multi-doc session merges & fine-grained citations
-
-Evaluation harness with backtests and ablations
-
-License
-MIT — see LICENSE (or update as needed).
-
-Acknowledgments
-AkashX.ai for the challenge & dataset direction
-
-Open-source ecosystem: FastAPI, Streamlit, ChromaDB, Sentence-Transformers, Prophet, TensorFlow/Keras, XGBoost, Plotly
-
-Yahoo Finance for historical market data
-
-
-
-If you want, I can generate a matching **`CONTRIBUTING.md`** and a minimal **architecture diagram
