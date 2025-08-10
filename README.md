@@ -31,18 +31,18 @@ Turn unstructured financial documents and market data into **actionable** buy/se
 
 | Feature | Screenshot Preview |
 | :--- | :---: |
-| **1. Home / Health Check** | ![Home Page](screenshots/1.png) |
-| **2. PDF Upload (Stage 1)** | ![PDF Upload](screenshots/2.png) |
-| **3. Document Processing Status** | ![Processing Status](screenshots/3.png) |
-| **4. Q&A Over PDF Chunks** | ![Q&A Interface](screenshots/4.png) |
-| **5. Sentiment Analysis** | ![Sentiment Analysis](screenshots/5.png) |
-| **6. Anomaly Detection (YoY/Margins)** | ![Anomaly Detection](screenshots/6.png) |
-| **7. Forecasting Inputs (Stage 2)** | ![Forecasting Inputs](screenshots/7.png) |
-| **8. Strategy Chart: Price + Ensemble** | ![Strategy Chart](screenshots/8.png) |
-| **9. Signal Timeline (BUY/HOLD/SELL)** | ![Signal Timeline](screenshots/9.png) |
-| **10. Expected Return & Confidence** | ![Return and Confidence](screenshots/10.png) |
-| **11. Model Performance Metrics** | ![Model Metrics](screenshots/11.png) |
-| **12. Downloads & Embedded Chart** | ![Downloads](screenshots/12.png) |
+| **1. Home / Health Check** | ![Home Page](Screenshots/1.png) |
+| **2. PDF Upload (Stage 1)** | ![PDF Upload](Screenshots/2.png) |
+| **3. Document Processing Status** | ![Processing Status](Screenshots/3.png) |
+| **4. Q&A Over PDF Chunks** | ![Q&A Interface](Screenshots/4.png) |
+| **5. Sentiment Analysis** | ![Sentiment Analysis](Screenshots/5.png) |
+| **6. Anomaly Detection (YoY/Margins)** | ![Anomaly Detection](Screenshots/6.png) |
+| **7. Forecasting Inputs (Stage 2)** | ![Forecasting Inputs](Screenshots/7.png) |
+| **8. Strategy Chart: Price + Ensemble** | ![Strategy Chart](Screenshots/8.png) |
+| **9. Signal Timeline (BUY/HOLD/SELL)** | ![Signal Timeline](Screenshots/9.png) |
+| **10. Expected Return & Confidence** | ![Return and Confidence](Screenshots/10.png) |
+| **11. Model Performance Metrics** | ![Model Metrics](Screenshots/11.png) |
+| **12. Downloads & Embedded Chart** | ![Downloads](Screenshots/12.png) |
 
 ---
 
