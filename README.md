@@ -41,7 +41,7 @@ Edit
 ## 🧑‍🤝‍🧑 Team
 - Kundan Kumar – Lead Developer
 - Nikita Nayak  – AI/ML Engineer
-   Koustubh Verma – Frontend Developer
+- Koustubh Verma – Frontend Developer
 - Gyan Prakash – Data Specialist and ML Engineer
 
 ---
