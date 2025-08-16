@@ -613,3 +613,4 @@ with tab_strategy:
 # ============================== Footer ==============================
 st.markdown("---")
 st.caption("Frontend for AkashX.ai Hackathon • Talks to your FastAPI: /upload-pdf, /query, /sentiment, /anomaly, /forecast/run, [/strategy/recommend (optional)]")
+
